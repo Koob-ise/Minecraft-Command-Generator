@@ -61,12 +61,6 @@ docker compose up -d
 ```
 Access the application at `http://localhost:8009` (or configure reverse proxy to port 80).
 
-#### Option 4: Desktop Python GUI (Original)
-```bash
-pip install customtkinter pyperclip
-python "Minecraft Command Generator.py"
-```
-
 ---
 
 ### 🎮 In-Game Instructions
@@ -134,12 +128,6 @@ open index.html
 docker compose up -d
 ```
 Приложение станет доступно по адресу `http://localhost:8009`.
-
-#### Вариант 4: Оригинальное десктопное приложение на Python
-```bash
-pip install customtkinter pyperclip
-python "Minecraft Command Generator.py"
-```
 
 ---
 
