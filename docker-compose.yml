@@ -1,0 +1,9 @@
+services:
+  mcg:
+    image: nginx:alpine
+    container_name: mcg_app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8009:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro

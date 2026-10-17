@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft Command Generator | Генератор команд Майнкрафт</title>
+  <meta name="description" content="Объединяйте несколько команд Minecraft Java в одну с помощью структуры falling_block и вагонеток с командными блоками. Все вычисления происходят прямо в браузере.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2310b981'/><rect x='6' y='6' width='20' height='20' rx='3' fill='%231e293b'/><rect x='10' y='10' width='12' height='12' rx='2' fill='%23f59e0b'/><circle cx='16' cy='16' r='3' fill='%23ef4444'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Minecraft Command Generator</h1>
+          <p class="brand-subtitle" data-i18n="subtitle">Объединение множества команд Minecraft Java в одну (1-Command Block)</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="badge-client" title="Все вычисления выполняются в браузере, без обращения к серверу">
+          <span class="status-dot"></span>
+          <span data-i18n="client_only">100% Client-Side</span>
+        </div>
+        <a href="https://github.com/Koob-ise/Minecraft-Command-Generator" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="GitHub Repository">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <button id="lang-btn" class="btn btn-outline btn-sm" title="Переключить язык">
+          <span id="lang-text">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="main-grid">
+      <!-- Left Column: Command Input & List -->
+      <section class="card commands-card">
+        <div class="card-header">
+          <div class="header-with-badge">
+            <h2 data-i18n="input_title">Список команд</h2>
+            <span id="command-count-badge" class="badge">0</span>
+          </div>
+          <div class="card-header-tools">
+            <button id="batch-modal-btn" class="btn btn-ghost btn-sm" title="Вставить несколько команд сразу">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span data-i18n="batch_import">Пакетный ввод</span>
+            </button>
+            <button id="presets-btn" class="btn btn-ghost btn-sm" title="Готовые примеры">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span data-i18n="presets">Примеры</span>
+            </button>
+            <button id="clear-all-btn" class="btn btn-danger-ghost btn-sm" title="Очистить всё">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span data-i18n="clear">Очистить</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Input Form -->
+        <form id="add-command-form" class="command-input-row" onsubmit="return false;">
+          <div class="input-wrapper">
+            <span class="prompt-symbol">/</span>
+            <input type="text" id="command-input" placeholder="Введите команду (например: give @p diamond 64)" autocomplete="off" spellcheck="false" data-i18n-placeholder="input_placeholder">
+          </div>
+          <button type="submit" id="add-btn" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span data-i18n="add">Добавить</span>
+          </button>
+        </form>
+
+        <!-- Command List Container -->
+        <div class="command-list-container">
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon">🎮</div>
+            <h3 data-i18n="empty_title">Команды пока не добавлены</h3>
+            <p data-i18n="empty_desc">Введите команду выше, вставьте список пачкой или загрузите готовый шаблон.</p>
+            <div class="empty-actions">
+              <button class="btn btn-outline btn-sm preset-quick-btn" data-preset="starter" data-i18n="quick_starter">⚡ Набор выживания</button>
+              <button class="btn btn-outline btn-sm preset-quick-btn" data-preset="arena" data-i18n="quick_arena">⚔️ Арена эффектов</button>
+            </div>
+          </div>
+          <ul id="command-list" class="command-list" aria-label="Список команд"></ul>
+        </div>
+      </section>
+
+      <!-- Right Column: Generation Settings & Output -->
+      <section class="card result-card">
+        <div class="card-header">
+          <h2 data-i18n="result_title">Результат генерации</h2>
+          <div class="generator-toolbar">
+            <button id="generate-btn" class="btn btn-emerald btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span data-i18n="generate">Сгенерировать</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Options Drawer / Bar -->
+        <div class="options-bar">
+          <div class="option-item">
+            <label for="opt-coords" data-i18n="label_coords">Координаты:</label>
+            <input type="text" id="opt-coords" value="~ ~1 ~" class="input-sm" spellcheck="false">
+          </div>
+
+          <div class="option-item">
+            <label class="checkbox-label" title="Удаляет вагонетки с командными блоками после срабатывания">
+              <input type="checkbox" id="opt-autokill" checked>
+              <span class="custom-checkbox"></span>
+              <span data-i18n="label_autokill">Авто-удаление вагонеток</span>
+            </label>
+          </div>
+
+          <div class="option-item">
+            <label class="checkbox-label" title="Автоматически обновлять результат при изменении списка">
+              <input type="checkbox" id="opt-live" checked>
+              <span class="custom-checkbox"></span>
+              <span data-i18n="label_live">Живое обновление</span>
+            </label>
+          </div>
+
+          <div class="option-item">
+            <label class="checkbox-label" title="Удалять префикс '/' у команд при генерации">
+              <input type="checkbox" id="opt-strip-slash" checked>
+              <span class="custom-checkbox"></span>
+              <span data-i18n="label_strip_slash">Нормализовать '/'</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Output Textarea and Actions -->
+        <div class="output-container">
+          <div class="output-meta">
+            <div class="meta-item">
+              <span data-i18n="chars_label">Символов:</span>
+              <strong id="char-count">0</strong>
+              <span id="char-limit-indicator" class="limit-tag">Чат OK</span>
+            </div>
+            <div class="meta-item">
+              <span data-i18n="minecarts_label">Вагонеток:</span>
+              <strong id="minecart-count">0</strong>
+            </div>
+            <div class="meta-actions">
+              <button id="wrap-toggle-btn" class="btn btn-ghost btn-xs" title="Переключить перенос строк">
+                <span data-i18n="wrap_text">Перенос строк</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="code-area-wrapper">
+            <textarea id="output-text" readonly spellcheck="false" placeholder="Здесь появится итоговая команда для вставки в Командный блок..." data-i18n-placeholder="output_placeholder"></textarea>
+          </div>
+
+          <div class="action-footer">
+            <button id="copy-btn" class="btn btn-primary btn-lg" disabled>
+              <svg id="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg id="check-icon" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span id="copy-btn-text" data-i18n="copy">Скопировать команду</span>
+            </button>
+
+            <button id="download-btn" class="btn btn-secondary" disabled title="Скачать как .mcfunction или .txt файл">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span data-i18n="download">Скачать файл</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- How It Works Accordion / Guide -->
+        <details class="guide-box">
+          <summary>
+            <span class="guide-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span data-i18n="guide_title">Как использовать в игре?</span>
+            </span>
+          </summary>
+          <div class="guide-content">
+            <ol>
+              <li data-i18n="guide_step1">Выдайте себе командный блок в Minecraft: <code>/give @p command_block</code></li>
+              <li data-i18n="guide_step2">Установите его на землю и откройте правой кнопкой мыши.</li>
+              <li data-i18n="guide_step3">Вставьте скопированную команду с помощью <kbd>Ctrl</kbd> + <kbd>V</kbd>.</li>
+              <li data-i18n="guide_step4">Активируйте блок сигналом редстоуна (кнопка, рычаг или факел).</li>
+              <li data-i18n="guide_step5">Спавнится башня из активирующего рельса и блока редстоуна, которая последовательно выполнит все команды и автоматически удалит вагонетки!</li>
+            </ol>
+            <p class="guide-note" data-i18n="guide_note">💡 <strong>Подсказка:</strong> Командный блок поддерживает команды длиной до 32 500 символов, что позволяет упаковывать сотни команд в один клик.</p>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span>Minecraft Command Generator</span> &bull; 
+        <span data-i18n="standalone_note">Работает полностью оффлайн прямо в вашем браузере</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com/Koob-ise/Minecraft-Command-Generator" target="_blank" rel="noopener noreferrer" class="link-muted">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Original by Koob-ise
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Batch Import Modal -->
+  <div id="batch-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="batch-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="batch-modal-title" data-i18n="modal_batch_title">Пакетный импорт команд</h3>
+        <button id="batch-close-btn" class="btn-icon" aria-label="Закрыть">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc" data-i18n="modal_batch_desc">Вставьте несколько команд (по одной на каждой строке). Пустые строки и комментарии с # будут пропущены.</p>
+        <textarea id="batch-input" rows="8" placeholder="give @p diamond 1&#10;give @p netherite_sword 1&#10;tp @p ~ ~5 ~&#10;effect give @p speed 30 1" spellcheck="false"></textarea>
+        <div class="modal-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="batch-replace-check">
+            <span class="custom-checkbox"></span>
+            <span data-i18n="modal_batch_replace">Заменить текущий список (иначе добавить к существующим)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="batch-cancel-btn" class="btn btn-outline" data-i18n="cancel">Отмена</button>
+        <button id="batch-submit-btn" class="btn btn-primary" data-i18n="modal_batch_submit">Импортировать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Presets Modal -->
+  <div id="presets-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="presets-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="presets-modal-title" data-i18n="modal_presets_title">Готовые шаблоны команд</h3>
+        <button id="presets-close-btn" class="btn-icon" aria-label="Закрыть">&times;</button>
+      </div>
+      <div class="modal-body presets-grid">
+        <div class="preset-card" data-preset="starter">
+          <h4>⚔️ <span data-i18n="preset_starter_name">Стартовый набор воина</span></h4>
+          <p data-i18n="preset_starter_desc">Незеритовый меч, кирка, комплект брони, золотые яблоки и факелы.</p>
+        </div>
+        <div class="preset-card" data-preset="arena">
+          <h4>🏟️ <span data-i18n="preset_arena_name">Подготовка арены</span></h4>
+          <p data-i18n="preset_arena_desc">Смена дня, ясная погода, включение эффектов ночного зрения и скорости.</p>
+        </div>
+        <div class="preset-card" data-preset="creative">
+          <h4>🛠️ <span data-i18n="preset_creative_name">Режим строителя</span></h4>
+          <p data-i18n="preset_creative_desc">Творческий режим, эффект левитации, набор структурных и барьерных блоков.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="presets-cancel-btn" class="btn btn-outline" data-i18n="close">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
